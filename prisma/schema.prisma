@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model usuarios {
+  id           String   @id @default(uuid())
+  firebase_uid String   @unique
+  nome         String?
+  email        String   @unique
+  foto_perfil  String?
+  bio          String?
+  telefone     String?
+  role         String   @default("user")
+  verificado   Boolean  @default(false)
+  ativo        Boolean  @default(true)
+  data_nascimento DateTime?
+  data_criacao DateTime @default(now())
+  ultimo_login DateTime?
+}
