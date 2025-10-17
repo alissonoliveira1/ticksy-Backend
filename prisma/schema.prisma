@@ -11,6 +11,7 @@ model usuarios {
   id           String   @id @default(uuid())
   firebase_uid String   @unique
   nome         String?
+  sobrenome    String?
   email        String   @unique
   foto_perfil  String?
   bio          String?
@@ -21,4 +22,40 @@ model usuarios {
   data_nascimento DateTime?
   data_criacao DateTime @default(now())
   ultimo_login DateTime?
+  organizador   Organizador?    @relation("UsuarioOrganizador")
+}
+
+model Organizador {
+  id           String    @id @default(uuid())
+  usuarioId    String    @unique
+  nomeEmpresa  String?
+  cnpj         String?   @unique
+  cpf          String?   @unique
+  site         String?
+  verificado   Boolean   @default(false)
+
+  usuario      usuarios   @relation("UsuarioOrganizador",fields: [usuarioId], references: [id])
+  eventos      Evento[]
+
+ 
+}
+
+model Evento {
+  id                  String    @id @default(uuid())
+  organizadorId       String
+  titulo              String
+  descricao           String?
+  categoria           String?
+  local               String?
+  cidade              String?
+  estado              String?
+  dataInicio          DateTime
+  dataFim             DateTime
+  preco               Decimal   @db.Decimal(10, 2)
+  capacidade          Int
+  ingressosDisponiveis Int
+  banner              String?
+  criadoEm            DateTime  @default(now())
+
+  organizador         Organizador @relation(fields: [organizadorId], references: [id])
 }
