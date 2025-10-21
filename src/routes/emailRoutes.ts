@@ -10,25 +10,16 @@ const codes: CodeStore = {};
 
 router.post("/send-code", async (req: Request, res: Response) => {
   const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "E-mail é obrigatório" });
 
-  if (!email) {
-    return res.status(400).json({ error: "E-mail é obrigatório" });
-  }
-
-  
   const code = Math.floor(1000 + Math.random() * 9000).toString();
-
-
   const expiresAt = Date.now() + 5 * 60 * 1000;
-
   codes[email] = { code, expiresAt };
 
   try {
     await sendVerificationEmail(email, code);
-    console.log(`Código enviado para ${email}: ${code}`);
     res.json({ success: true, message: "Código enviado com sucesso!" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Erro ao enviar e-mail" });
   }
 });
