@@ -11,7 +11,7 @@ export async function sendVerificationEmail(email: string, code: string) {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: 'alissonoliveira201339@gmail.com',
+    to: email,
     subject: "Código de Verificação",
     text: `Seu código de verificação é: ${code}`,
   };
