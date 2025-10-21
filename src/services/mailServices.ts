@@ -1,20 +1,14 @@
 import nodemailer from "nodemailer";
-
+import { Resend } from 'resend';
 export async function sendVerificationEmail(email: string, code: string) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER, 
-      pass: process.env.EMAIL_PASS,  
-    },
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+ await resend.emails.send({
+    from: 'SeuApp <no-reply@seuapp.com>',
+    to: email,
+    subject: 'Seu código de verificação',
+    html: `<h1>${code}</h1><p>Seu código expira em 5 minutos.</p>`,
   });
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Código de Verificação",
-    text: `Seu código de verificação é: ${code}`,
-  };
-
-  await transporter.sendMail(mailOptions);
 }
