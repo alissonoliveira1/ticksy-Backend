@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URLTEST")
 }               
 
 model usuarios {
@@ -23,6 +23,7 @@ model usuarios {
   data_criacao DateTime @default(now())
   ultimo_login DateTime?
   organizador   Organizador?    @relation("UsuarioOrganizador")
+  customToken String?
 }
 
 model Organizador {
@@ -58,4 +59,12 @@ model Evento {
   criadoEm            DateTime  @default(now())
 
   organizador         Organizador @relation(fields: [organizadorId], references: [id])
+}
+
+model VerificationCode {
+  id        String   @id @default(cuid())
+  email     String   @unique // O e-mail do usuário
+  code      String   // O código de 4 dígitos
+  uid       String   // O Firebase UID, para sabermos quem atualizar
+  expiresAt DateTime // A data de expiração
 }

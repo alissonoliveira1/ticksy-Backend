@@ -23,19 +23,21 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const me = async (req: AuthRequest, res: Response) => {
-  return res.status(200).json({ usuario: req.user });
-};
 
 export const profile = async (req: AuthRequest, res: Response) => {
-  const usuario = req.user;
-  return res.status(200).json({
-    nome: usuario.nome,
-    sobrenome: usuario.sobrenome,
-    email: usuario.email,
-    verificado: usuario.verificado,
-  });
+
+const usuarioCompleto = req.user;
+
+
+ if (!usuarioCompleto || !usuarioCompleto.firebase_uid) {
+
+ return res.status(401).json({ error: "Dados do usuário não disponíveis (Token Válido, mas objeto não anexado)." });
+ }
+
+
+ return res.status(200).json({ usuario: usuarioCompleto });
 };
+
 
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -45,3 +47,4 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
