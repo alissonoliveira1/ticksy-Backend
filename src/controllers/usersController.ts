@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { auth } from "../utils/firebase";
 import prisma from "../models/prismaClient";
 import { sendVerificationEmail } from "../services/mailServices"; // Importe seu serviço de e-mail
+import { upload } from "../middlewares/updateImgPerfil";
 
 export const criarConta = async (req: Request, res: Response) => {
   try {
@@ -91,4 +92,10 @@ export const deletarUsuario = async (req: Request, res: Response) => {
 
     return res.status(500).json({ error: "Erro interno ao deletar usuário." });
   }
+
+  
 };
+
+
+  
+ 
