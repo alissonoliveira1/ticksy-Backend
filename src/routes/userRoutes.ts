@@ -8,10 +8,6 @@ import { firebaseAuth } from "../middlewares/firebaseAuth";
 const userRoutes = Router();
 userRoutes.post("/criar-conta", criarConta);
 userRoutes.delete('/:uid', deletarUsuario);
-userRoutes.patch(
-    '/updatePerfil', 
-    firebaseAuth, // <--- O SEU 'ISAUTHENTICATED' AQUI
-    updateUser
-);
+userRoutes.patch('/updatePerfil', firebaseAuth, updateUser);
 userRoutes.post("/updateIMG/:uid", upload.single("file"), updateImg);
 export default userRoutes;
