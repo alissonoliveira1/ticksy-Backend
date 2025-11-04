@@ -2,49 +2,53 @@ import { Request, Response } from "express";
 import prisma from "../models/prismaClient";
 import cloudinary from "../utils/cloudinary";
 
-export const updateUser = async (req: Request, res: Response) => {
-     const { uid } = req.params;
-     if (!uid) {
-        return res.status(400).json({ error: "O ID do usuário (UID) é obrigatório." });
+export const updateUser = async (req: any, res: Response) => {
+
+const uid = req.user?.firebase_uid; 
+      
+    if (!uid) {
+       
+        return res.status(401).json({ error: "Não autorizado." });
     }
-     const { nome, fotoUrl, sobrenome, genero, telefone, data_nascimento } = req.body;
 
-    try {
-        const existingUser = await prisma.usuarios.findUnique({
-      where: { firebase_uid:uid },
+  const { nome, sobrenome, genero, telefone, data_nascimento } = req.body;
+   const dataNasc = data_nascimento ? new Date(data_nascimento) : null;
+  try {
+    const existingUser = await prisma.usuarios.findUnique({
+      where: { firebase_uid: uid },// Use o UID vindo do token
     });
-   
-
     if (!existingUser) {
-        return res.status(404).json({ error: "Usuário não encontrado" });
-    } 
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
 
     const upadteUser = await prisma.usuarios.update({
-          where: { firebase_uid:uid },
-        data: {
-            ...(    nome && { nome }),
-            ...(    sobrenome && { sobrenome }),
-            ...(    fotoUrl && { fotoUrl }),
-            ...(    genero && { genero }),
-            ...(    telefone && { telefone }),
-            ...(    data_nascimento && { data_nascimento }),
-        },
+      where: { firebase_uid: uid },
+      data: {
+        ...(nome && { nome }),
+        ...(sobrenome && { sobrenome }),
+        ...(genero && { genero }),
+        ...(telefone && { telefone }),
+        ...(dataNasc && { data_nascimento: dataNasc }),
+      },
+    });
 
-    })
-    return res.status(200).json({ message: "Usuário atualizado com sucesso", usuario: upadteUser });
-    } catch (error: any) {
-        console.error(`Erro ao atualizar usuário com UID ${uid}:`, error);
-        return res.status(500).json({ error: "Erro interno ao atualizar usuário." });
-
-}
-
-
-}
+    return res
+      .status(200)
+      .json({ message: "Usuário atualizado com sucesso", usuario: upadteUser });
+  } catch (error: any) {
+    console.error(`Erro ao atualizar usuário com UID ${uid}:`, error);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao atualizar usuário." });
+  }
+};
 
 export const updateImg = async (req: Request, res: Response) => {
   const { uid } = req.params;
   if (!uid) {
-    return res.status(400).json({ error: "O ID do usuário (UID) é obrigatório." });
+    return res
+      .status(400)
+      .json({ error: "O ID do usuário (UID) é obrigatório." });
   }
 
   const file = req.file;
@@ -53,7 +57,6 @@ export const updateImg = async (req: Request, res: Response) => {
   }
 
   try {
-    // Upload para Cloudinary
     const uploadResult = await new Promise<any>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
