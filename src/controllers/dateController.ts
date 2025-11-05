@@ -53,7 +53,6 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
             data: dataToUpdate,
             select: { // Retorna apenas os campos que o frontend precisa
                 id: true,
-                firebase_uid: true,
                 nome: true,
                 sobrenome: true,
                 email: true,
