@@ -9,6 +9,7 @@ export interface AuthRequest extends Request {
 export const firebaseAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
   // 1️⃣ Extrair token
   const authHeader = req.headers.authorization;
+  console.log("🔑 Token recebido:", req.headers.authorization);
   if (!authHeader) {
     console.error("Header Authorization não encontrado");
     return res.status(401).json({ error: "Token não fornecido" });

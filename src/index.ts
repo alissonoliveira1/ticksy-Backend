@@ -12,20 +12,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-    const {data_nascimento} = req.body;
-    const dataAtual = new Date(data_nascimento);
-    console.log("--- DEBUG START ---");
-    console.log("Recebido na URL:", req.originalUrl);
-     console.log("Método data:", dataAtual);
-    console.log("Content-Type Header:", req.headers['content-type']);
-    console.log("req.body após express.json():", req.body);
-    console.log("--- DEBUG END ---");
-    next();
-});
-
-
-
 
 app.use("/api", emailRoutes);
 app.use("/auth", authRoutes);
